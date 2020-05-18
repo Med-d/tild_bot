@@ -32,3 +32,8 @@ def start_dialog(message):
         bot.send_message(message.chat.id, "Hi, super")
     else:
         bot.send_message(message.chat.id, "Hi")
+
+
+#Bot don't stop
+if __name__ == '__main__':
+     bot.polling(none_stop=True)
