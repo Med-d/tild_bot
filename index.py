@@ -80,6 +80,7 @@ def get_login(message):
 def get_pass(message):
     global log
     keys = {log[message.chat.id]: message.text}
+    print(keys)
     try:
         with connect.cursor() as cursor:
             cursor.execute('select login, pass from performer;')
