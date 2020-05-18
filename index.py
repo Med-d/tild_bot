@@ -21,11 +21,6 @@ def find_user(chat_id, username):
         for row in cursor:
             if chat_id == row['chat_id']:
                 return SUPER
-        cursor.execute("select chat_id from customer")
-        for row in cursor:
-            if chat_id == row['chat_id']:
-                return SIMPLE
-        cursor.execute("insert customer(chat_id, name) values ("+str(chat_id)+", '"+str(username)+"');")
         return SIMPLE
 
 #Connecting to bot
@@ -34,6 +29,6 @@ bot = telebot.TeleBot(config.TOKEN)
 @bot.message_handler(commands = ['start'])
 def start_dialog(message):
     if find_user(message.chat.id, message.chat.username) == SUPER:
-        pass
+        bot.send_message(message.chat.id, "Hi, super")
     else:
-        print('1')
+        bot.send_message(message.chat.id, "Hi")
