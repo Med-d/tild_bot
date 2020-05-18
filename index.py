@@ -79,11 +79,14 @@ def get_login(message):
 
 def get_pass(message):
     global log
+    print(-2)
     keys = log[message.chat.id]
     try:
+        print(-1)
         with connect.cursor() as cursor:
             cursor.execute('select login, pass from performer;')
             for row in cursor:
+                print(0)
                 if row['login'] == keys.keys()[0]:
                     print(1)
                     if row['pass'] == keys[keys.keys()[0]]:
