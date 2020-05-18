@@ -85,9 +85,12 @@ def get_pass(message):
             cursor.execute('select login, pass from performer;')
             for row in cursor:
                 if row['login'] == keys.keys()[0]:
+                    print(1)
                     if row['pass'] == keys[keys.keys()[0]]:
-                        connect.execute('update performer set chat_id = '+message.chat.id+' where login = "'+keys.keys()[0]+'""')
+                        print(2)
+                        connect.execute('update performer set chat_id = '+message.chat.id+' where login = "'+keys.keys()[0]+'";')
                         connect.commit()
+                        print(3)
                         bot.send_message(message.chat.id, 'ok')
                     bot.send_message(message.chat.id, 'wrong password')
             bot.send_message(message.chat.id, 'wrong login')
