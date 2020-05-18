@@ -66,16 +66,19 @@ log = {}
 
 @bot.message_handler(commands = ['login'])
 def logining(message):
+    global log
     bot.send_message(message.chat.id, 'enter login')
     log[message.chat.id] = {}
     bot.register_next_step_handler(message, get_login)
 
 def get_login(message):
+    global log
     log[message.chat.id][message.text] = ''
     bot.send_message(message.chat.id, 'enter password')
     bot.register_next_step_handler(message, get_pass)
 
 def get_pass(message):
+    global log
     keys = log[message.chat.id]
     try:
         with connect.cursor() as cursor:
