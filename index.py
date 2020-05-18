@@ -50,6 +50,7 @@ def add_login(message):
     bot.register_next_step_handler(message, add_pass)
 
 def add_pass(message):
+    global users
     users.append(message.text)
     try:
         with connect.cursor() as cursor:
