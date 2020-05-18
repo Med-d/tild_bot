@@ -80,7 +80,7 @@ def get_pass(message):
         with connect.cursor() as cursor:
             cursor.execute('select login, pass from performer;')
             for row in cursor:
-                print row
+                print(row)
 
     except:
         bot.send_message(message.chat.id, 'something went wrong')
