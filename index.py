@@ -73,13 +73,13 @@ def logining(message):
 
 def get_login(message):
     global log
-    log[message.chat.id][message.text] = ''
+    log[message.chat.id] = message.text
     bot.send_message(message.chat.id, 'enter password')
     bot.register_next_step_handler(message, get_pass)
 
 def get_pass(message):
     global log
-    keys = log[message.chat.id]
+    keys = {log[message.chat.id]: message.text}
     try:
         with connect.cursor() as cursor:
             cursor.execute('select login, pass from performer;')
@@ -89,8 +89,10 @@ def get_pass(message):
                         connect.execute('update performer set chat_id = '+message.chat.id+' where login = "'+list(keys.keys())[0]+'";')
                         connect.commit()
                         bot.send_message(message.chat.id, 'ok')
-                    bot.send_message(message.chat.id, 'wrong password')
-            bot.send_message(message.chat.id, 'wrong login')
+                    else:
+                        bot.send_message(message.chat.id, 'wrong password')
+            else:
+                bot.send_message(message.chat.id, 'wrong login')
     except:
         bot.send_message(message.chat.id, 'something went wrong')
 
