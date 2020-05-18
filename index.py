@@ -51,6 +51,7 @@ def add_pass(message):
     try:
         with connect.cursor() as cursor:
             cursor.execute('insert performer(login, pass) values("'+users[0]+'","'+users[1]+'");')
+            connect.commit()
             bot.send_message(message.chat.id, "Исполнитель успешно добавлен!")
     except:
         bot.send_message(message.chat.id, 'somthing went wrong')
