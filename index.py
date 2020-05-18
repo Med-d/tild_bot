@@ -17,7 +17,7 @@ connect = pymysql.connect(host = 'localhost',
 
 def find_user(chat_id, username):
     with connect.cursor() as cursor:
-        cursor.execute("select chat_id from perfomer")
+        cursor.execute("select chat_id from performer")
         for row in cursor:
             if chat_id == row['chat_id']:
                 return SUPER
