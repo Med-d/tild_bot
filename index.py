@@ -81,21 +81,21 @@ def get_pass(message):
     global log
     keys = {log[message.chat.id]: message.text}
     print(keys)
-    #try:
-    with connect.cursor() as cursor:
-        cursor.execute('select login, pass from performer;')
-        for row in cursor:
-            if row['login'] == list(keys.keys())[0]:
-                if row['pass'] == keys[list(keys.keys())[0]]:
-                    connect.execute('update performer set chat_id = '+str(message.chat.id)+' where login = "'+list(keys.keys())[0]+'";')
-                    connect.commit()
-                    bot.send_message(message.chat.id, 'ok')
+    try:
+        with connect.cursor() as cursor:
+            cursor.execute('select login, pass from performer;')
+            for row in cursor:
+                if row['login'] == list(keys.keys())[0]:
+                    if row['pass'] == keys[list(keys.keys())[0]]:
+                        cursor.execute('update performer set chat_id = '+str(message.chat.id)+' where login = "'+list(keys.keys())[0]+'";')
+                        connect.commit()
+                        bot.send_message(message.chat.id, 'ok')
+                    else:
+                        bot.send_message(message.chat.id, 'wrong password')
                 else:
-                    bot.send_message(message.chat.id, 'wrong password')
-            else:
-                bot.send_message(message.chat.id, 'wrong login')
-    #except:
-    #    bot.send_message(message.chat.id, 'something went wrong')
+                    bot.send_message(message.chat.id, 'wrong login')
+    except:
+        bot.send_message(message.chat.id, 'something went wrong')
 
 
 #Bot don't stop
