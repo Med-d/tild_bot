@@ -23,6 +23,9 @@ def find_user(chat_id, username):
                 return SUPER
         return SIMPLE
 
+def login_new_performer(login, password):
+    pass
+
 #Connecting to bot
 bot = telebot.TeleBot(config.TOKEN)
 
@@ -53,8 +56,35 @@ def add_pass(message):
             cursor.execute('insert performer(login, pass) values("'+users[0]+'","'+users[1]+'");')
             connect.commit()
             bot.send_message(message.chat.id, "Исполнитель успешно добавлен!")
+
     except:
-        bot.send_message(message.chat.id, 'somthing went wrong')
+        bot.send_message(message.chat.id, 'something went wrong')
+    users = []
+
+log = {}
+
+@bot.message_handler(commands = ['login'])
+def logining(message):
+    bot.send_message(message.chat.id, 'enter login')
+    log[message.chat.id] = {}
+    bot.register_next_step_handler(message, get_login)
+
+def get_login(message):
+    log[message.chat.id][message.text] = ''
+    bot.send_message(message.chat.id, 'enter password')
+    bot.register_next_step_handler(message, get_pass)
+
+def get_pass(message):
+    keys = log[message.chat.id]
+    try:
+        with connect.cursor() as cursor:
+            cursor.execute('select login, pass from performer;')
+            for row in cursor:
+                print row
+
+    except:
+        bot.send_message(message.chat.id, 'something went wrong')
+
 
 #Bot don't stop
 if __name__ == '__main__':
