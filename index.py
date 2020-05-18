@@ -33,6 +33,27 @@ def start_dialog(message):
     else:
         bot.send_message(message.chat.id, "Hi")
 
+users = []
+
+@bot.message_handler(commands = ['add_performer'])
+def adding_perf(message):
+    bot.send_message(message.chat.id, "Введите login исполнителя")
+    bot.register_next_step_handler(message, add_login)
+
+def add_login(message):
+    global users
+    users.append(message.text)
+    bot.send_message(message.chat.id, "Введите пароль для него")
+    bot.register_next_step_handler(message, add_pass)
+
+def add_pass(message):
+    users.append(message.text)
+    try:
+        with connect.cursor() as cursor:
+            cursor.execute('insert performer(login, pass) values("'+users[0]+'","'+users[1]+'")')
+            bot.send_message(message.chat.id, "Исполнитель успешно добавлен!")
+    except:
+        bot.send_message(message.chat.id, 'somthing went wrong')
 
 #Bot don't stop
 if __name__ == '__main__':
