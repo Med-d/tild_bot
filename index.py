@@ -53,7 +53,7 @@ def push_order(short_ord):
 #Начало общения с ботом
 @bot.message_handler(commands = ['start'])
 def start_dialog(message):
-    if find_user(message.chat.id, message.chat.username) == SUPER:
+    if find_user(message.chat.id) == SUPER:
         bot.send_message(message.chat.id,
         "Hi, super",
         reply_markup = keyboard())
