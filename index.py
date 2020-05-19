@@ -122,7 +122,7 @@ def get_pass(message):
 orders = {}
 
 @bot.message_handler(content_types = ['text'])
-def simple_text():
+def simple_text(message):
     if message.text.lower() == "сделать заказ":
         bot.send_message(message.chat.id, 'Enter sortcut name of order')
         bot.register_next_step_handler(message, short_name)
