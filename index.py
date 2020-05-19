@@ -37,6 +37,13 @@ def keyboard():
     markup.add(btn2, btn1)
     return markup
 
+def keyboard_accept():
+    markup = types.ReplyKeyboardMarkup(one_time_keyboard=True, resize_keyboard=True)
+    btn1 = types.KeyboardButton('Accept')
+    btn2 = types.KeyboardButton("Deny")
+    markup.add(btn2, btn1)
+    return markup
+
 def push_order(short_ord):
     with connect.cursor() as cursor:
         cursor.execute('select chat_id from performer;')
@@ -164,6 +171,35 @@ def contact_add_bd(message):
     except:
         bot.send_message(message.chat.id, 'something went wrong')
 
+id = {}
+
+@bot.message_handler(commands = ['find_order'])
+def start_finding(message):
+    if find_user(message.chat.id) == SUPER:
+        bot.send_message(message_handler.chat.id, 'Enter short name of order to get information')
+        bot.register_next_step_handler(message, find_order)
+    else:
+        bot.send_message(message.chat.id, 'Access denied')
+
+def find_order(message):
+    global id
+    f = True
+    with connect.cursor() as cursor:
+        cursor.execute('select id, short_ord, ord from orders')
+        for row in cursor:
+            if row['short_ord'] == message.text:
+                bot.send_message(message.chat.id,
+                'Order: \n' + row['ord'],
+                reply_markup = keyboard_accept())
+                id[message.chat.id] = row['contacts']
+
+def get_contact(message):
+    global id
+    if message.text == 'Accept':
+        bot.send_message(message.chat.id, "Contacts: "+id[message.chat.id])
+    else:
+        bot.send_message(message.chat.id, "Order deneid")
+   
 #Bot don't stop
 if __name__ == '__main__':
      bot.polling(none_stop=True)
