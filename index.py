@@ -1,13 +1,16 @@
+# -*- coding: utf-8 -*-
 import config
 import telebot
 import os
 import shutil
 import pymysql.cursors
+from telebot import types
 
 #Constants
 SUPER = 'super_user'
 SIMPLE = 'simple_user'
 
+#Подключение к базе данных
 connect = pymysql.connect(host = 'localhost',
                              user = 'root',
                              password = config.passwordSQL,
@@ -15,6 +18,7 @@ connect = pymysql.connect(host = 'localhost',
                              charset = 'utf8',
                           cursorclass = pymysql.cursors.DictCursor)
 
+#Ищет пользователя в таблице performer
 def find_user(chat_id, username):
     with connect.cursor() as cursor:
         cursor.execute("select chat_id from performer")
@@ -23,25 +27,38 @@ def find_user(chat_id, username):
                 return SUPER
         return SIMPLE
 
-def login_new_performer(login, password):
-    pass
-
 #Connecting to bot
 bot = telebot.TeleBot(config.TOKEN)
 
+def keyboard():
+    markup = types.ReplyKeyboardMarkup(one_time_keyboard=True, resize_keyboard=True)
+    btn1 = types.KeyboardButton('FAQ')
+    btn2 = types.KeyboardButton('Order')
+    markup.add(btn1)
+    murkup.add(btn2)
+    return markup
+
+#Начало общения с ботом
 @bot.message_handler(commands = ['start'])
 def start_dialog(message):
     if find_user(message.chat.id, message.chat.username) == SUPER:
         bot.send_message(message.chat.id, "Hi, super")
     else:
-        bot.send_message(message.chat.id, "Hi")
+        bot.send_message(message.chat.id,
+        "Hi",
+        reply_markup = keyboard())
 
+#Добавляет исполнителя. Может добавить только в том случае, если ID чата будет
+#совпадать с тем, который указан в файле config.py
 users = []
-
+#
 @bot.message_handler(commands = ['add_performer'])
 def adding_perf(message):
-    bot.send_message(message.chat.id, "Введите login исполнителя")
-    bot.register_next_step_handler(message, add_login)
+    if message.chat.id == config.admin_id:
+        bot.send_message(message.chat.id, "Введите login исполнителя")
+        bot.register_next_step_handler(message, add_login)
+    else:
+        bot.send_message(message.chat.id, 'Access deneid')
 
 def add_login(message):
     global users
@@ -62,8 +79,9 @@ def add_pass(message):
         bot.send_message(message.chat.id, 'something went wrong')
     users = []
 
+#
 log = {}
-
+#
 @bot.message_handler(commands = ['login'])
 def logining(message):
     global log
@@ -96,7 +114,6 @@ def get_pass(message):
                     bot.send_message(message.chat.id, 'wrong login')
     except:
         bot.send_message(message.chat.id, 'something went wrong')
-
 
 #Bot don't stop
 if __name__ == '__main__':
