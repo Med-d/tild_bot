@@ -148,7 +148,7 @@ def find_order(message):
     global id
     f = True
     with connect.cursor() as cursor:
-        cursor.execute('select id, short_ord, ord from orders')
+        cursor.execute('select id, short_ord, ord, contacts from orders')
         for row in cursor:
             if row['short_ord'] == message.text:
                 bot.send_message(message.chat.id,
