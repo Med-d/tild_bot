@@ -123,10 +123,10 @@ orders = {}
 
 @bot.message_handler(content_type = ['text'])
 def simple_text():
-    if message.text.lower() = "сделать заказ":
+    if message.text.lower() == "сделать заказ":
         bot.send_message(message.chat.id, 'Enter sortcut name of order')
         bot.register_next_step_handler(message, short_name)
-    elif message.text.lower() = 'faq':
+    elif message.text.lower() == 'faq':
         bot.send_message(message.chat.id,
         'FAQ',
         reply_markup = keyboard())
