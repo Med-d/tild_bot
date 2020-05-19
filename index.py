@@ -42,7 +42,9 @@ def keyboard():
 @bot.message_handler(commands = ['start'])
 def start_dialog(message):
     if find_user(message.chat.id, message.chat.username) == SUPER:
-        bot.send_message(message.chat.id, "Hi, super")
+        bot.send_message(message.chat.id,
+        "Hi, super",
+        reply_markup = keyboard())
     else:
         bot.send_message(message.chat.id,
         "Hi",
