@@ -155,6 +155,7 @@ def find_order(message):
                 'Order: \n' + row['ord'],
                 reply_markup = keyboard_accept())
                 id[message.chat.id] = row['contacts']
+                bot.register_next_step_handler(message, get_contact)
 
 def get_contact(message):
     global id
