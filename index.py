@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 import config
-import telebot
 import os
 import shutil
 import pymysql.cursors
+import telebot
 from telebot import types
 
 #Constants
