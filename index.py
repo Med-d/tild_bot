@@ -33,7 +33,7 @@ bot = telebot.TeleBot(config.TOKEN)
 def keyboard():
     markup = types.ReplyKeyboardMarkup(one_time_keyboard=True, resize_keyboard=True)
     btn1 = types.KeyboardButton('FAQ')
-    btn2 = types.KeyboardButton("Сделать зкаказ")
+    btn2 = types.KeyboardButton("Сделать заказ")
     markup.add(btn2, btn1)
     return markup
 
@@ -149,14 +149,14 @@ def contact_add_bd(message):
     global orders
     orders[message.chat.id].append(message.text)
     keys = orders.pop(message.chat.id)
-    try:
-        with connect.cursor() as cursor:
-            cursor.execute('insert orders(short_ord, ord, contacts) values ("'+keys[0]+'", "'+keys[1]+'", "'+keys[2]+'")')
-            connect.commit()
-            push_order(short_ord)
+    #try:
+    with connect.cursor() as cursor:
+        cursor.execute('insert orders(short_ord, ord, contacts) values ("'+keys[0]+'", "'+keys[1]+'", "'+keys[2]+'")')
+        connect.commit()
+        push_order(short_ord)
         bot.send_message(message.chat.id, 'order has been added')
-    except:
-        bot.send_message(message.chat.id, 'something went wrong')
+    #except:
+    #    bot.send_message(message.chat.id, 'something went wrong')
 
 #Bot don't stop
 if __name__ == '__main__':
