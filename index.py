@@ -35,7 +35,7 @@ def keyboard():
     btn1 = types.KeyboardButton('FAQ')
     btn2 = types.KeyboardButton('Order')
     markup.add(btn1)
-    murkup.add(btn2)
+    markup.add(btn2)
     return markup
 
 #Начало общения с ботом
