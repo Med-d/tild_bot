@@ -33,10 +33,12 @@ bot = telebot.TeleBot(config.TOKEN)
 def keyboard():
     markup = types.ReplyKeyboardMarkup(one_time_keyboard=True, resize_keyboard=True)
     btn1 = types.KeyboardButton('FAQ')
-    btn2 = types.KeyboardButton('Order')
-    markup.add(btn1)
-    markup.add(btn2)
+    btn2 = types.KeyboardButton("Сделать зкаказ")
+    markup.add(btn2, btn1)
     return markup
+
+def push_order(short_ord):
+    pass
 
 #Начало общения с ботом
 @bot.message_handler(commands = ['start'])
@@ -100,7 +102,6 @@ def get_login(message):
 def get_pass(message):
     global log
     keys = {log[message.chat.id]: message.text}
-    print(keys)
     try:
         with connect.cursor() as cursor:
             cursor.execute('select login, pass from performer;')
@@ -112,8 +113,48 @@ def get_pass(message):
                         bot.send_message(message.chat.id, 'ok')
                     else:
                         bot.send_message(message.chat.id, 'wrong password')
-                else:
-                    bot.send_message(message.chat.id, 'wrong login')
+            else:
+                bot.send_message(message.chat.id, 'wrong login')
+    except:
+        bot.send_message(message.chat.id, 'something went wrong')
+    log.pop(message.chat.id)
+
+orders = {}
+
+@bot.message_handler(content_type = ['text'])
+def simple_text():
+    if message.text.lower() = "сделать заказ":
+        bot.send_message(message.chat.id, 'Enter sortcut name of order')
+        bot.register_next_step_handler(message, short_name)
+    elif message.text.lower() = 'faq':
+        bot.send_message(message.chat.id,
+        'FAQ',
+        reply_markup = keyboard())
+    else:
+        bot.send_message(message.chat.id, 'don`t understand')
+
+def short_name(message):
+    global orders
+    orders[message.chat.id] = [message.text]
+    bot.send_message(message.chat.id, 'Enter full information about order')
+    bot.register_next_step_handler(message, order_inf)
+
+def order_inf(message):
+    global orders
+    orders[message.chat.id].append(message.text)
+    bot.send_message(message.chat.id, 'Enter your contacts')
+    bot.register_next_step_handler(message, contact_add_bd)
+
+def contact_add_bd(message):
+    global orders
+    orders[message.chat.id].append(message.text)
+    keys = orders.pop(message.chat.id)
+    try:
+        with connect.cursor() as cursor:
+            cursor.execute('insert orders(short_ord, ord, contacts) values ("'+keys[0]+'", "'+keys[1]+'", "'+keys[2]+'")')
+            connect.commit()
+            push_order(short_ord)
+        bot.send_message(message.chat.id, 'order has been added')
     except:
         bot.send_message(message.chat.id, 'something went wrong')
 
