@@ -58,8 +58,8 @@ users = []
 #
 @bot.message_handler(commands = ['add_performer'])
 def adding_perf(message):
-    bot.send_message(message.chat.id, message.chat.id)
-    if message.chat.id == config.admin_id:
+    #bot.send_message(message.chat.id, message.chat.id)
+    if str(message.chat.id) == config.admin_id:
         bot.send_message(message.chat.id, "Введите login исполнителя")
         bot.register_next_step_handler(message, add_login)
     else:
