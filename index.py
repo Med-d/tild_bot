@@ -116,7 +116,7 @@ def get_pass(message):
                         f = False
                     else:
                         bot.send_message(message.chat.id, 'wrong password')
-            else if f:
+            elif f:
                 bot.send_message(message.chat.id, 'wrong login')
     except:
         bot.send_message(message.chat.id, 'something went wrong')
