@@ -19,7 +19,7 @@ connect = pymysql.connect(host = 'localhost',
                           cursorclass = pymysql.cursors.DictCursor)
 
 #Ищет пользователя в таблице performer
-def find_user(chat_id, username):
+def find_user(chat_id):
     with connect.cursor() as cursor:
         cursor.execute("select chat_id from performer")
         for row in cursor:
