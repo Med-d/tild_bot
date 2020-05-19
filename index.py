@@ -139,7 +139,7 @@ id = {}
 @bot.message_handler(commands = ['find_order'])
 def start_finding(message):
     if find_user(message.chat.id) == SUPER:
-        bot.send_message(message_handler.chat.id, 'Enter short name of order to get information')
+        bot.send_message(message.chat.id, 'Enter short name of order to get information')
         bot.register_next_step_handler(message, find_order)
     else:
         bot.send_message(message.chat.id, 'Access denied')
