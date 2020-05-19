@@ -38,7 +38,10 @@ def keyboard():
     return markup
 
 def push_order(short_ord):
-    pass
+    with connect.cursor() as cursor:
+        cursor.execute('select chat_id from performer;')
+        for row in cursor:
+            bot.send_message(row['chat_id'], 'New order! Shord name:', short_ord)
 
 #Начало общения с ботом
 @bot.message_handler(commands = ['start'])
