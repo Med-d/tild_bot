@@ -55,10 +55,10 @@ def push_order(short_ord):
 def start_dialog(message):
     if find_user(message.chat.id) == SUPER:
         bot.send_message(message.chat.id,
-        "Здраствуйте. Вы зашли с аккаунта исполнителя \nЧтобы посмотреть заказы введите /find_order")
+        "Здравствуйте. Вы зашли с аккаунта исполнителя \nЧтобы посмотреть заказы введите \n/find_order")
     else:
         bot.send_message(message.chat.id,
-        "Здраствуйте. Для продолжения выберите, что вы хотите сделать",
+        "Здравствуйте. Для продолжения выберите, что вы хотите сделать",
         reply_markup = keyboard())
 
 #Добавляет исполнителя. Может добавить только в том случае, если ID чата будет
@@ -170,7 +170,7 @@ def simple_text(message):
         bot.register_next_step_handler(message, short_name)
     elif message.text.lower() == 'faq':
         bot.send_message(message.chat.id,
-        'FAQ',
+        'Если вы хотите зайти в аккаунт, то узнайте свой логин и пароль и напишите команду /login ',
         reply_markup = keyboard())
     else:
         bot.send_message(message.chat.id, 'Я не понимаю \nВведите /start')
