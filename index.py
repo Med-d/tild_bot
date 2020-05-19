@@ -103,6 +103,7 @@ def get_login(message):
 def get_pass(message):
     global log
     keys = {log[message.chat.id]: message.text}
+    f = True
     try:
         with connect.cursor() as cursor:
             cursor.execute('select login, pass from performer;')
@@ -112,9 +113,10 @@ def get_pass(message):
                         cursor.execute('update performer set chat_id = '+str(message.chat.id)+' where login = "'+list(keys.keys())[0]+'";')
                         connect.commit()
                         bot.send_message(message.chat.id, 'ok')
+                        f = False
                     else:
                         bot.send_message(message.chat.id, 'wrong password')
-            else:
+            else if f:
                 bot.send_message(message.chat.id, 'wrong login')
     except:
         bot.send_message(message.chat.id, 'something went wrong')
@@ -150,14 +152,14 @@ def contact_add_bd(message):
     global orders
     orders[message.chat.id].append(message.text)
     keys = orders.pop(message.chat.id)
-    #try:
-    with connect.cursor() as cursor:
-        cursor.execute('insert orders(short_ord, ord, contacts) values ("'+keys[0]+'", "'+keys[1]+'", "'+keys[2]+'")')
-        connect.commit()
-        push_order(short_ord)
-        bot.send_message(message.chat.id, 'order has been added')
-    #except:
-    #    bot.send_message(message.chat.id, 'something went wrong')
+    try:
+        with connect.cursor() as cursor:
+            cursor.execute('insert orders(short_ord, ord, contacts) values ("'+keys[0]+'", "'+keys[1]+'", "'+keys[2]+'")')
+            connect.commit()
+            push_order(keys[0])
+            bot.send_message(message.chat.id, 'order has been added')
+    except:
+        bot.send_message(message.chat.id, 'something went wrong')
 
 #Bot don't stop
 if __name__ == '__main__':
