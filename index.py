@@ -55,7 +55,7 @@ def push_order(short_ord):
 def start_dialog(message):
     if find_user(message.chat.id) == SUPER:
         bot.send_message(message.chat.id,
-        "Здраствуйте. Вы были зашли с аккаунта исполнителя Чтобы посмотреть заказы введите /find_order")
+        "Здраствуйте. Вы зашли с аккаунта исполнителя \nЧтобы посмотреть заказы введите /find_order")
     else:
         bot.send_message(message.chat.id,
         "Здраствуйте. Для продолжения выберите, что вы хотите сделать",
