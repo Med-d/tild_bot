@@ -39,8 +39,8 @@ def keyboard():
 
 def keyboard_accept():
     markup = types.ReplyKeyboardMarkup(one_time_keyboard=True, resize_keyboard=True)
-    btn1 = types.KeyboardButton('Accept')
-    btn2 = types.KeyboardButton("Deny")
+    btn1 = types.KeyboardButton('Принять')
+    btn2 = types.KeyboardButton("Отклонить")
     markup.add(btn2, btn1)
     return markup
 
@@ -48,18 +48,17 @@ def push_order(short_ord):
     with connect.cursor() as cursor:
         cursor.execute('select chat_id from performer;')
         for row in cursor:
-            bot.send_message(row['chat_id'], 'New order! Short name: ' + short_ord)
+            bot.send_message(row['chat_id'], 'Новый заказ! \nНазвание: ' + short_ord)
 
 #Начало общения с ботом
 @bot.message_handler(commands = ['start'])
 def start_dialog(message):
     if find_user(message.chat.id) == SUPER:
         bot.send_message(message.chat.id,
-        "Hi, super",
-        reply_markup = keyboard())
+        "Здраствуйте. Вы были зашли с аккаунта исполнителя Чтобы посмотреть заказы введите /find_order")
     else:
         bot.send_message(message.chat.id,
-        "Hi",
+        "Здраствуйте. Для продолжения выберите, что вы хотите сделать",
         reply_markup = keyboard())
 
 #Добавляет исполнителя. Может добавить только в том случае, если ID чата будет
@@ -70,10 +69,10 @@ users = []
 def adding_perf(message):
     #bot.send_message(message.chat.id, message.chat.id)
     if str(message.chat.id) == config.admin_id:
-        bot.send_message(message.chat.id, "Введите login исполнителя")
+        bot.send_message(message.chat.id, "Введите логин для исполнителя")
         bot.register_next_step_handler(message, add_login)
     else:
-        bot.send_message(message.chat.id, 'Access deneid')
+        bot.send_message(message.chat.id, 'Отказано в доступе')
 
 def add_login(message):
     global users
@@ -91,7 +90,7 @@ def add_pass(message):
             bot.send_message(message.chat.id, "Исполнитель успешно добавлен!")
 
     except:
-        bot.send_message(message.chat.id, 'something went wrong')
+        bot.send_message(message.chat.id, 'Что-то пошло не так...')
     users = []
 
 #
@@ -100,14 +99,14 @@ log = {}
 @bot.message_handler(commands = ['login'])
 def logining(message):
     global log
-    bot.send_message(message.chat.id, 'enter login')
+    bot.send_message(message.chat.id, 'Введите логин')
     log[message.chat.id] = {}
     bot.register_next_step_handler(message, get_login)
 
 def get_login(message):
     global log
     log[message.chat.id] = message.text
-    bot.send_message(message.chat.id, 'enter password')
+    bot.send_message(message.chat.id, 'Введите пароль')
     bot.register_next_step_handler(message, get_pass)
 
 def get_pass(message):
@@ -122,14 +121,14 @@ def get_pass(message):
                     if row['pass'] == keys[list(keys.keys())[0]]:
                         cursor.execute('update performer set chat_id = '+str(message.chat.id)+' where login = "'+list(keys.keys())[0]+'";')
                         connect.commit()
-                        bot.send_message(message.chat.id, 'ok')
+                        bot.send_message(message.chat.id, 'Вы вошли')
                         f = False
                     else:
-                        bot.send_message(message.chat.id, 'wrong password')
+                        bot.send_message(message.chat.id, 'Неправильный пароль!')
             if f:
-                bot.send_message(message.chat.id, 'wrong login')
+                bot.send_message(message.chat.id, 'Такого логина не существует')
     except:
-        bot.send_message(message.chat.id, 'something went wrong')
+        bot.send_message(message.chat.id, 'Что-то пошло не так...')
     log.pop(message.chat.id)
 
 orders = {}
@@ -139,10 +138,10 @@ id = {}
 @bot.message_handler(commands = ['find_order'])
 def start_finding(message):
     if find_user(message.chat.id) == SUPER:
-        bot.send_message(message.chat.id, 'Enter short name of order to get information')
+        bot.send_message(message.chat.id, 'Введите название заказа, который вы хотите найти')
         bot.register_next_step_handler(message, find_order)
     else:
-        bot.send_message(message.chat.id, 'Access denied')
+        bot.send_message(message.chat.id, 'Отказано в доступе')
 
 def find_order(message):
     global id
@@ -152,40 +151,40 @@ def find_order(message):
         for row in cursor:
             if row['short_ord'] == message.text:
                 bot.send_message(message.chat.id,
-                'Order: \n' + row['ord'],
+                'Заказ: \n' + row['ord'],
                 reply_markup = keyboard_accept())
                 id[message.chat.id] = row['contacts']
                 bot.register_next_step_handler(message, get_contact)
 
 def get_contact(message):
     global id
-    if message.text == 'Accept':
-        bot.send_message(message.chat.id, "Contacts: "+id[message.chat.id])
+    if message.text == 'Принять':
+        bot.send_message(message.chat.id, "Связь: "+id[message.chat.id])
     else:
-        bot.send_message(message.chat.id, "Order deneid")
+        bot.send_message(message.chat.id, "Заказ отклонен")
 
 @bot.message_handler(content_types = ['text'])
 def simple_text(message):
     if message.text.lower() == "сделать заказ":
-        bot.send_message(message.chat.id, 'Enter sortcut name of order')
+        bot.send_message(message.chat.id, 'Дайте короткое название Вашему заказу')
         bot.register_next_step_handler(message, short_name)
     elif message.text.lower() == 'faq':
         bot.send_message(message.chat.id,
         'FAQ',
         reply_markup = keyboard())
     else:
-        bot.send_message(message.chat.id, 'don`t understand')
+        bot.send_message(message.chat.id, 'Я не понимаю \nВведите /start')
 
 def short_name(message):
     global orders
     orders[message.chat.id] = [message.text]
-    bot.send_message(message.chat.id, 'Enter full information about order')
+    bot.send_message(message.chat.id, 'Расскажите полностью о вашем заказе')
     bot.register_next_step_handler(message, order_inf)
 
 def order_inf(message):
     global orders
     orders[message.chat.id].append(message.text)
-    bot.send_message(message.chat.id, 'Enter your contacts')
+    bot.send_message(message.chat.id, 'Как с Вами связаться? \nЕсли вы хотите, чтобы Вам позвонили, напишите удобное время')
     bot.register_next_step_handler(message, contact_add_bd)
 
 def contact_add_bd(message):
@@ -197,9 +196,9 @@ def contact_add_bd(message):
             cursor.execute('insert orders(short_ord, ord, contacts) values ("'+keys[0]+'", "'+keys[1]+'", "'+keys[2]+'")')
             connect.commit()
             push_order(keys[0])
-            bot.send_message(message.chat.id, 'order has been added')
+            bot.send_message(message.chat.id, 'Заказ добавлен!')
     except:
-        bot.send_message(message.chat.id, 'something went wrong')
+        bot.send_message(message.chat.id, 'Что-то пошло не так...')
 
 
 
