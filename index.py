@@ -49,7 +49,7 @@ def push_order(short_ord):
         cursor.execute('select chat_id from performer;')
         for row in cursor:
             print(row['chat_id'])
-            if row['chat_id'] != 'null':
+            if row['chat_id'] != 'None':
                 bot.send_message(row['chat_id'], 'Новый заказ! \nНазвание: ' + short_ord)
 
 #Начало общения с ботом
