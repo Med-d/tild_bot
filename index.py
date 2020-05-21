@@ -48,7 +48,8 @@ def push_order(short_ord):
     with connect.cursor() as cursor:
         cursor.execute('select chat_id from performer;')
         for row in cursor:
-            bot.send_message(row['chat_id'], 'Новый заказ! \nНазвание: ' + short_ord)
+            if row['chat_id'] != 'NULL':
+                bot.send_message(row['chat_id'], 'Новый заказ! \nНазвание: ' + short_ord)
 
 #Начало общения с ботом
 @bot.message_handler(commands = ['start'])
